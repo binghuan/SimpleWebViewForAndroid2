@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BH_Android_Browser</string>
+    <string name="label_browser">BH\'s Browser</string>
 </resources>
