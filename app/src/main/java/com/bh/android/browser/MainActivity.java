@@ -40,11 +40,8 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-
-
-
-            CookieManager cookieMgr = CookieManager.getInstance();
+        
+        CookieManager cookieMgr = CookieManager.getInstance();
         cookieMgr.setAcceptCookie(true);
         //cookieMgr.setAcceptThirdPartyCookies(mWebView, true);
 
@@ -59,6 +56,9 @@ public class MainActivity extends AppCompatActivity {
         mWebView.clearCache(true);
         mWebView.clearHistory();
         mWebView.getSettings().setJavaScriptEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            mWebView.getSettings().setMediaPlaybackRequiresUserGesture(false);
+        }
         mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         //mWebView.loadUrl("http://192.168.0.121:8080/index.html");
     }
