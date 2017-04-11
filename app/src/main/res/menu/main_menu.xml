@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_inject"
+        android:icon="@drawable/ic_anesthesia_dentist_injection_diagonal_symbol"
+        android:title="@string/action_code_injection"
+        app:showAsAction="always"/>
+
+</menu>

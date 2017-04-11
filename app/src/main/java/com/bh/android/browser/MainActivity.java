@@ -1,12 +1,19 @@
 package com.bh.android.browser;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -19,12 +26,15 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements InputTextFragment.OnFragmentInteractionListener {
 
     private WebView mWebView = null;
     private EditText mUrlInputField = null;
     private ProgressBar mProgressBar = null;
     private ImageButton mButtonClearInput = null;
+    private Context mContext = null;
+    private FragmentManager mFragmentMgr = null;
+    private InputTextFragment mInputTextFragment = null;
 
     private final String TAG = "BH_Browser";
 
@@ -39,22 +49,57 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void hideIME(View v) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
+
     private void loadUrl(View v) {
 
 
         String targetUrl = mUrlInputField.getText().toString();
         mWebView.loadUrl(targetUrl);
         if (DBG) Log.v(TAG, "loadUrl: " + targetUrl);
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        hideIME(v);
         showLoadingProgress(true);
     }
 
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_inject:
+
+                if (mInputTextFragment == null) {
+                    mInputTextFragment = new InputTextFragment();
+                    mFragmentMgr.beginTransaction().add(R.id.fragment_container, mInputTextFragment).commit();
+                }
+
+                findViewById(R.id.fragment_container).setVisibility(View.VISIBLE);
+
+
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         if (DBG) Log.v(TAG, ">> onCreate");
+
+        mContext = this;
+
+        mFragmentMgr = getSupportFragmentManager();
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -108,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
                 showLoadingProgress(false);
                 getSupportActionBar().setTitle(view.getTitle());
+                mUrlInputField.setText(view.getUrl());
             }
         });
         mWebView.clearCache(true);
@@ -132,5 +178,20 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
 
         if (DBG) Log.v(TAG, ">> onPause");
+    }
+
+    @Override
+    public void onJavaScriptInjection(String injectionString) {
+        Log.v(TAG, "onJavaScriptInjection: " + injectionString);
+        findViewById(R.id.fragment_container).setVisibility(View.GONE);
+        String content = injectionString.replace("\n", "").replace("\r", "");
+        mWebView.loadUrl("javascript:" + content);
+        mUrlInputField.setText(mWebView.getUrl());
+    }
+
+    @Override
+    public void onCancelPressed() {
+        Log.v(TAG, "onCancelPressed");
+        findViewById(R.id.fragment_container).setVisibility(View.GONE);
     }
 }
