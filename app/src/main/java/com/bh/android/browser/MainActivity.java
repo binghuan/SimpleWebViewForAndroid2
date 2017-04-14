@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity implements InputTextFragment
     public void onJavaScriptInjection(String injectionString) {
         Log.v(TAG, "onJavaScriptInjection: " + injectionString);
         findViewById(R.id.fragment_container).setVisibility(View.GONE);
-        String content = injectionString.replace("\n", "").replace("\r", "");
+        String content = injectionString.replaceAll("\n", "").replaceAll("\r", "");
         mWebView.loadUrl("javascript:" + content);
         mUrlInputField.setText(mWebView.getUrl());
     }
