@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.CookieManager;
@@ -160,15 +161,14 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.activity_main);
 
         if (DBG) Log.v(TAG, ">> onCreate");
-
         mContext = this;
-
         mFragmentMgr = getSupportFragmentManager();
-
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
         mButtonClearInput = (ImageButton) findViewById(R.id.clearinput);
         mButtonClearInput.setOnClickListener(new View.OnClickListener() {
@@ -247,6 +247,13 @@ public class MainActivity extends AppCompatActivity
             findViewById(R.id.web_title_bar).setVisibility(View.GONE);
             getSupportActionBar().show();
         }
+
+        findViewById(R.id.button_stop).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override

@@ -16,13 +16,14 @@
         <LinearLayout
             android:id="@+id/web_title_bar"
             android:layout_width="match_parent"
-            android:layout_height="36dp"
+            android:layout_height="48dp"
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:padding="7dp"
+                android:id="@+id/button_stop"
                 android:scaleType="fitXY"
                 android:src="@drawable/ic_cancel"/>
 
@@ -34,11 +35,13 @@
 
                 <TextView
                     android:id="@+id/text_title"
+                    android:textSize="24sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="---"/>
 
                 <TextView
+                    android:textSize="12sp"
                     android:id="@+id/text_url"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
