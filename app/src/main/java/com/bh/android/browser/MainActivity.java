@@ -220,6 +220,12 @@ public class MainActivity extends AppCompatActivity
                 showLoadingProgress(false);
                 getSupportActionBar().setTitle(view.getTitle());
                 mUrlInputField.setText(view.getUrl());
+
+                TextView textView = (TextView)findViewById(R.id.text_title);
+                textView.setText(mWebView.getTitle());
+                textView = (TextView)findViewById(R.id.text_url);
+                textView.setText(mWebView.getUrl());
+
             }
         });
         mWebView.clearCache(true);
@@ -231,7 +237,16 @@ public class MainActivity extends AppCompatActivity
         mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         //mWebView.loadUrl("http://192.168.0.121:8080/index.html");
 
-        handleIntent();
+        boolean isTriggeredByIntent = handleIntent();
+        if(isTriggeredByIntent) {
+            findViewById(R.id.address_bar).setVisibility(View.GONE);
+            findViewById(R.id.web_title_bar).setVisibility(View.VISIBLE);
+            getSupportActionBar().hide();
+        } else {
+            findViewById(R.id.address_bar).setVisibility(View.VISIBLE);
+            findViewById(R.id.web_title_bar).setVisibility(View.GONE);
+            getSupportActionBar().show();
+        }
     }
 
     @Override
