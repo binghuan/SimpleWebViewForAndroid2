@@ -1,12 +1,16 @@
 package com.bh.android.browser;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -26,7 +30,14 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity implements InputTextFragment.OnFragmentInteractionListener {
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+public class MainActivity extends AppCompatActivity
+        implements InputTextFragment.OnFragmentInteractionListener {
 
     private WebView mWebView = null;
     private EditText mUrlInputField = null;
@@ -46,21 +57,34 @@ public class MainActivity extends AppCompatActivity implements InputTextFragment
         } else {
             mProgressBar.setVisibility(View.INVISIBLE);
         }
-
     }
 
-    private void hideIME(View v) {
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    private void loadUrl(View v) {
+    private void loadUrl(String url) {
+        if (DBG) Log.v(TAG, "loadUrl: __" + url + "__");
+        if (url != null) {
+            mUrlInputField.setText(url);
+        }
+        doLoadUrl();
+    }
 
+    private void doLoadUrl() {
 
         String targetUrl = mUrlInputField.getText().toString();
         mWebView.loadUrl(targetUrl);
-        if (DBG) Log.v(TAG, "loadUrl: " + targetUrl);
-        hideIME(v);
+        if (DBG) Log.v(TAG, "doLoadUrl: " + targetUrl);
+        //hideIME(v);
+        hideKeyboard(this);
         showLoadingProgress(true);
     }
 
@@ -82,14 +106,56 @@ public class MainActivity extends AppCompatActivity implements InputTextFragment
                     mInputTextFragment = new InputTextFragment();
                     mFragmentMgr.beginTransaction().add(R.id.fragment_container, mInputTextFragment).commit();
                 }
-
                 findViewById(R.id.fragment_container).setVisibility(View.VISIBLE);
 
+                break;
+
+            case R.id.action_open_file:
+                performFileSearch();
 
                 break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode,
+                                 Intent resultData) {
+
+        // The ACTION_OPEN_DOCUMENT intent was sent with the request code
+        // READ_REQUEST_CODE. If the request code seen here doesn't match, it's the
+        // response to some other intent, and the code below shouldn't run at all.
+
+        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            // The document selected by the user won't be returned in the intent.
+            // Instead, a URI to that document will be contained in the return intent
+            // provided to this method as a parameter.
+            // Pull that URI using resultData.getData().
+            Uri uri = null;
+            if (resultData != null) {
+                uri = resultData.getData();
+                Log.i(TAG, "Uri: " + uri.toString());
+                loadUrl(uri.toString());
+            }
+        }
+    }
+
+    private boolean handleIntent() {
+
+        boolean isUrlIntentReceived = false;
+
+        Uri dataUri = getIntent().getData();
+        if (getIntent().getAction().equals(Intent.ACTION_VIEW) &&
+                dataUri != null) {
+            if (DBG) Log.v(TAG, "data uri=" + dataUri);
+            isUrlIntentReceived = true;
+
+            loadUrl(dataUri.toString());
+        }
+
+        return isUrlIntentReceived;
+
     }
 
     @Override
@@ -124,11 +190,11 @@ public class MainActivity extends AppCompatActivity implements InputTextFragment
                 if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_SEND
                         || actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_GO
                         || actionId == EditorInfo.IME_ACTION_NEXT) {
-                    loadUrl(v);
+                    loadUrl(null);
                     return true;
                 } else if (event != null && event.getAction() == KeyEvent.ACTION_DOWN
                         && event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
-                    loadUrl(v);
+                    loadUrl(null);
                     return true;
                 }
 
@@ -164,6 +230,8 @@ public class MainActivity extends AppCompatActivity implements InputTextFragment
         }
         mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         //mWebView.loadUrl("http://192.168.0.121:8080/index.html");
+
+        handleIntent();
     }
 
     @Override
@@ -194,4 +262,29 @@ public class MainActivity extends AppCompatActivity implements InputTextFragment
         Log.v(TAG, "onCancelPressed");
         findViewById(R.id.fragment_container).setVisibility(View.GONE);
     }
+
+    private static final int READ_REQUEST_CODE = 42;
+
+    /**
+     * Fires an intent to spin up the "file chooser" UI and select an image.
+     */
+    public void performFileSearch() {
+
+        // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file
+        // browser.
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+
+        // Filter to only show results that can be "opened", such as a
+        // file (as opposed to a list of contacts or timezones)
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        // Filter to show only images, using the image MIME data type.
+        // If one wanted to search for ogg vorbis files, the type would be "audio/ogg".
+        // To search for all documents available via installed storage providers,
+        // it would be "*/*".
+        intent.setType("*/*");
+
+        startActivityForResult(intent, READ_REQUEST_CODE);
+    }
+
 }

@@ -8,4 +8,10 @@
         android:title="@string/action_code_injection"
         app:showAsAction="always"/>
 
+    <item
+        android:id="@+id/action_open_file"
+        android:icon="@drawable/ic_open_archive"
+        android:title="@string/action_open_file"
+        app:showAsAction="always"/>
+
 </menu>
