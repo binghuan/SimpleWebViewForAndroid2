@@ -142,23 +142,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private boolean handleIntent() {
-
-        boolean isUrlIntentReceived = false;
-
-        Uri dataUri = getIntent().getData();
-        if (getIntent().getAction().equals(Intent.ACTION_VIEW) &&
-                dataUri != null) {
-            if (DBG) Log.v(TAG, "data uri=" + dataUri);
-            isUrlIntentReceived = true;
-
-            loadUrl(dataUri.toString());
-        }
-
-        return isUrlIntentReceived;
-
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -221,11 +204,6 @@ public class MainActivity extends AppCompatActivity
                 getSupportActionBar().setTitle(view.getTitle());
                 mUrlInputField.setText(view.getUrl());
 
-                TextView textView = (TextView)findViewById(R.id.text_title);
-                textView.setText(mWebView.getTitle());
-                textView = (TextView)findViewById(R.id.text_url);
-                textView.setText(mWebView.getUrl());
-
             }
         });
         mWebView.clearCache(true);
@@ -236,24 +214,6 @@ public class MainActivity extends AppCompatActivity
         }
         mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         //mWebView.loadUrl("http://192.168.0.121:8080/index.html");
-
-        boolean isTriggeredByIntent = handleIntent();
-        if(isTriggeredByIntent) {
-            findViewById(R.id.address_bar).setVisibility(View.GONE);
-            findViewById(R.id.web_title_bar).setVisibility(View.VISIBLE);
-            getSupportActionBar().hide();
-        } else {
-            findViewById(R.id.address_bar).setVisibility(View.VISIBLE);
-            findViewById(R.id.web_title_bar).setVisibility(View.GONE);
-            getSupportActionBar().show();
-        }
-
-        findViewById(R.id.button_stop).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
     }
 
     @Override
