@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity
         showLoadingProgress(true);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -213,6 +212,7 @@ public class MainActivity extends AppCompatActivity
             mWebView.getSettings().setMediaPlaybackRequiresUserGesture(false);
         }
         mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        mWebView.addJavascriptInterface(new AppJavaScriptProxy(this,mWebView), "androidAppProxy");
         //mWebView.loadUrl("http://192.168.0.121:8080/index.html");
     }
 

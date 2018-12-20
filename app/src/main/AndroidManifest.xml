@@ -28,6 +28,14 @@
                 <action android:name="android.intent.action.VIEW"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".WebViewHostActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

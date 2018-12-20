@@ -2,4 +2,6 @@
     <string name="label_browser">BH\'s Browser</string>
     <string name="action_code_injection">Inject</string>
     <string name="action_open_file">Open File</string>
+
+    <string name="action_settings">Settings</string>
 </resources>
