@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity
             mWebView.getSettings().setMediaPlaybackRequiresUserGesture(false);
         }
         mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        mWebView.addJavascriptInterface(new AppJavaScriptProxy(this,mWebView), "androidAppProxy");
+        mWebView.addJavascriptInterface(new AppJavaScriptProxy(this, mWebView), "androidAppProxy");
         //mWebView.loadUrl("http://192.168.0.121:8080/index.html");
     }
 
@@ -221,6 +221,15 @@ public class MainActivity extends AppCompatActivity
         super.onStop();
 
         if (DBG) Log.v(TAG, ">> onStop");
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mWebView.canGoBack()) {
+            mWebView.goBack();
+        } else {
+            onBackPressed();
+        }
     }
 
     @Override
