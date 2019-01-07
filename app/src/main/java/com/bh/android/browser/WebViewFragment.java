@@ -98,6 +98,8 @@ public class WebViewFragment extends Fragment {
         }
         mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         mWebView.addJavascriptInterface(new AppJavaScriptProxy(this.getActivity(), mWebView), "androidAppProxy");
+        mWebView.clearCache(true);
+        mWebView.clearHistory();
         mWebView.loadUrl(mUrlForParam);
         return view;
     }
