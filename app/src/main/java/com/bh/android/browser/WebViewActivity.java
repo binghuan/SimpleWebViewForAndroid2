@@ -75,7 +75,7 @@ public class WebViewActivity extends AppCompatActivity {
             mWebView.getSettings().setMediaPlaybackRequiresUserGesture(false);
         }
         mWebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        mWebView.addJavascriptInterface(new AppJavaScriptProxy(this,mWebView), "androidAppProxy");
+        mWebView.addJavascriptInterface(new AppJavaScriptProxy(this, mWebView), "androidAppProxy");
 
         //mWebView.loadUrl("http://192.168.0.121:8080/index.html");
 

@@ -52,4 +52,11 @@ public class AppJavaScriptProxy {
         // key from btoa("key_for_longfei")
         return "a2V5X2Zvcl9sb25nZmVp";
     }
+
+    @JavascriptInterface
+    public void hideActionBar() {
+        if (mActivity instanceof WebViewHostActivity) {
+            ((WebViewHostActivity) mActivity).hideActionBar();
+        }
+    }
 }

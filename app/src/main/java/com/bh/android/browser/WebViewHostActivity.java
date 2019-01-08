@@ -28,6 +28,8 @@ public class WebViewHostActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (DBG) Log.v(TAG, ">> onCreate");
+
         setContentView(R.layout.activity_web_view_host);
 
         mIsActionBarEnabled = true;
@@ -55,6 +57,7 @@ public class WebViewHostActivity extends AppCompatActivity
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+        if (DBG) Log.v(TAG, ">> onPostCreate");
 
         // Trigger the initial hide() shortly after the activity has been
         // created, to briefly hint to the user that UI controls
@@ -99,6 +102,7 @@ public class WebViewHostActivity extends AppCompatActivity
     }
 
     private void hideNavigationBar() {
+        if (DBG) Log.v(TAG, ">> hideNavigationBar");
         final int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -130,7 +134,12 @@ public class WebViewHostActivity extends AppCompatActivity
 
     @Override
     public void onPageFinished(String title, String url) {
+        if (DBG) Log.v(TAG, ">> onPageFinished");
         getSupportActionBar().setTitle(title);
         getSupportActionBar().setSubtitle(url);
+    }
+
+    public void hideActionBar() {
+        hide();
     }
 }

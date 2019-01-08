@@ -60,7 +60,7 @@ public class WebViewFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(DBG)Log.v(TAG, ">> onCreate");
+        if (DBG) Log.v(TAG, ">> onCreate");
         if (getArguments() != null) {
             mUrlForParam = getArguments().getString(ARG_URL);
         }
@@ -72,7 +72,7 @@ public class WebViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        if(DBG)Log.v(TAG, ">> onCreateView: " + mUrlForParam);
+        if (DBG) Log.v(TAG, ">> onCreateView: " + mUrlForParam);
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_web_view, container, false);
         mWebView = (WebView) view.findViewById(R.id.my_web_view);
@@ -118,7 +118,7 @@ public class WebViewFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        if(DBG)Log.v(TAG, ">> onDetach");
+        if (DBG) Log.v(TAG, ">> onDetach");
         mListener = null;
     }
 
