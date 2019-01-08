@@ -46,6 +46,8 @@ public class WebViewHostActivity extends AppCompatActivity
         mWebViewFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction().add(R.id.webView_fragment_container, mWebViewFragment).commit();
 
+        hideNavigationBar();
+        
         // Set up the user interaction to manually show or hide the system UI.
         if (mIsActionBarEnabled) {
             show();
@@ -74,8 +76,6 @@ public class WebViewHostActivity extends AppCompatActivity
         if (actionBar != null) {
             actionBar.hide();
         }
-
-        hideNavigationBar();
     }
 
     @SuppressLint("InlinedApi")
@@ -85,8 +85,6 @@ public class WebViewHostActivity extends AppCompatActivity
         ActionBar actionBar = getSupportActionBar();
         actionBar.show();
         actionBar.setDisplayHomeAsUpEnabled(true);
-
-        hideNavigationBar();
     }
 
     @Override
